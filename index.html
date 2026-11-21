@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loja do Adri - Perfumes</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif}
+body{background:#f7f7f7;color:#111}
+.top-venda{background:#ffcc00;color:#111;text-align:center;padding:10px 8px;font-size:13px;font-weight:900;position:sticky;top:0;z-index:50}
+.topbar{background:#111;color:#fff;text-align:center;padding:8px;font-size:12px}
+header{background:#fff;padding:14px 16px;position:sticky;top:36px;z-index:10;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.06);gap:8px}
+header b{font-size:20px} header b span{color:#c9a227}
+#cartBtn{background:#111;border:none;color:#fff;padding:11px 14px;border-radius:30px;font-weight:800;cursor:pointer}
+#ownerBtn{background:#c9a227;border:none;color:#fff;padding:11px 14px;border-radius:30px;font-weight:800;cursor:pointer}
+.hero{margin:14px;border-radius:20px;overflow:hidden;background:#111;color:#fff;padding:28px 20px}
+.hero h1{font-size:32px;line-height:.95} .hero h1 span{color:#ffcc00}
+.hero p{margin:10px 0;color:#ddd} .hero a{display:inline-block;background:#c9a227;color:#fff;padding:12px 20px;border-radius:30px;text-decoration:none;font-weight:800}
+.badges{display:flex;gap:8px;padding:0 14px;flex-wrap:wrap} .badges span{background:#fff;border:1px solid #eee;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.cats{display:flex;gap:8px;overflow:auto;padding:14px} .cats button{white-space:nowrap;padding:10px 16px;border-radius:30px;border:1px solid #ddd;background:#fff;cursor:pointer;font-weight:700}
+.cats button.active{background:#111;color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 14px 14px}
+.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.card img{width:100%;height:200px;object-fit:cover;display:block;background:#eee}
+.card .info{padding:13px} .tag{font-size:10px;background:#fff8dc;color:#c9a227;padding:4px 8px;border-radius:20px;font-weight:800}
+.card h3{font-size:14px;margin:7px 0 3px;min-height:36px} .stars{color:#ffb400;font-size:12px}
+.price{font-size:18px;font-weight:900} .old{font-size:12px;color:#999;text-decoration:line-through;margin-left:6px}
+.add{width:100%;background:#111;color:#fff;border:none;padding:12px;border-radius:12px;font-weight:800;cursor:pointer;margin-top:8px}
+.owner-actions{display:flex;gap:6px;margin-top:8px} .owner-actions button{flex:1;padding:9px;border-radius:10px;border:none;font-weight:800;cursor:pointer} .edit{background:#ffcc00} .del{background:#ff3b30;color:#fff}
+#cart{position:fixed;right:0;top:0;width:94%;max-width:400px;height:100%;background:#fff;z-index:30;transform:translateX(105%);transition:.3s;padding:18px;overflow:auto}
+#cart.open{transform:none} .item{display:flex;gap:10px;border-bottom:1px solid #eee;padding:12px 0;align-items:center} .item img{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.qty button{width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:#fff}
+.total{font-size:20px;font-weight:900;margin:14px 0} .btn-wpp{width:100%;background:#25d366;border:none;padding:15px;border-radius:12px;font-weight:900;font-size:16px;cursor:pointer}
+#ownerPanel{position:fixed;left:0;top:0;width:94%;max-width:420px;height:100%;background:#fff;z-index:40;transform:translateX(-105%);transition:.3s;padding:18px;overflow:auto;box-shadow:4px 0 20px rgba(0,0,0,.2)}
+#ownerPanel.open{transform:none}
+#ownerPanel input,#ownerPanel select{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:6px 0}
+#ownerPanel label{font-size:12px;font-weight:800;color:#666}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:900;cursor:pointer;margin-top:8px}
+.btn-save{background:#111;color:#fff} .btn-add{background:#c9a227;color:#fff} .btn-reset{background:#eee}
+.preview{width:100%;height:150px;object-fit:cover;border-radius:12px;background:#eee;display:none;margin-top:8px}
+footer{text-align:center;padding:22px;color:#666;font-size:13px;line-height:1.6}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)} .hero h1{font-size:48px}}
+</style></head><body>
+<div class="top-venda">🔥 SUA LOJA POR SÓ R$29 - QUER UMA IGUAL? FALA COM ADRIANO 🔥</div>
+<div class="topbar">FRETE GRÁTIS ACIMA DE R$149 • PIX COM 5% OFF • ENVIO PARA TODO BRASIL</div>
+<header><b>LOJA <span>DO ADRI</span> PERFUMES</b><div style="display:flex;gap:6px"><button id="ownerBtn" onclick="openOwner()">⚙️ Dono</button><button id="cartBtn" onclick="toggleCart()">Carrinho (<span id="count">0</span>)</button></div></header>
+<div class="hero"><h1>PERFUME<br><span>QUE MARCA PRESENÇA.</span></h1><p>Importados e nacionais, com preço direto, sem loja cara.</p><a href="#grid">VER COLEÇÃO ↓</a></div>
+<div class="badges"><span>⭐ 4.9 - 2.300+ avaliações</span><span>🚚 Envio em 24h</span><span>🔒 Original</span><span>↩️ Troca fácil</span></div>
+<div class="cats" id="cats"></div>
+<div class="grid" id="grid"></div>
+<div id="cart"><button onclick="toggleCart()" style="background:#eee;border:none;padding:8px 12px;border-radius:8px;cursor:pointer">✕ Fechar</button><h2 style="margin:12px 0">Seu Carrinho</h2><div id="items"></div><div class="total" id="total"></div><div id="frete" style="color:#0a9a3d;font-weight:800;margin-bottom:10px"></div><button class="btn-wpp" onclick="finalizar()">Finalizar no WhatsApp</button></div>
+<div id="ownerPanel">
+<button onclick="closeOwner()" style="background:#eee;border:none;padding:8px 12px;border-radius:8px;cursor:pointer">✕ Fechar painel</button>
+<h2 style="margin:12px 0">⚙️ Painel do Dono</h2>
+<p style="font-size:13px;color:#666">Adiciona, edita, troca foto e remove produto. Senha: 1234</p><hr style="margin:12px 0">
+<label>NOME DO PRODUTO</label><input id="f_nome" placeholder="Ex: Malbec">
+<label>PREÇO</label><input id="f_preco" type="number" step="0.01" placeholder="189.90">
+<label>PREÇO ANTIGO</label><input id="f_old" type="number" step="0.01" placeholder="229.90">
+<label>CATEGORIA</label><select id="f_cat"><option>Masculinos</option><option>Femininos</option><option>Unissex</option><option>Kits</option></select>
+<label>FOTO - DA GALERIA 📸</label><input id="f_foto" type="file" accept="image/*" onchange="previewFoto(event)">
+<img id="f_preview" class="preview">
+<label>OU COLAR LINK DA FOTO</label><input id="f_link" placeholder="https://...">
+<input type="hidden" id="f_id" value="">
+<button class="btn btn-add" onclick="salvarProduto()">💾 Salvar / Adicionar Produto</button>
+<button class="btn btn-reset" onclick="limparForm()">Limpar formulário</button>
+<hr style="margin:14px 0"><h3>Produtos cadastrados</h3><div id="ownerList"></div>
+</div>
+<footer>LOJA DO ADRI PERFUMES<br>SUA LOJA POR SÓ R$29 - QUER UMA IGUAL? FALA COM ADRIANO<br>WhatsApp: 19 99893-2588</footer>
+<script>
+const DEFAULT=[
+{id:1,n:"Malbec - O Boticário 100ml",p:189.90,old:229.90,c:"Masculinos",img:"https://m.media-amazon.com/images/I/61+Z+Q+Q+Q+Q.jpg"},
+{id:2,n:"212 VIP - Carolina Herrera 80ml",p:349.90,old:429.90,c:"Femininos",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=600"},
+{id:3,n:"One Million - Paco Rabanne 100ml",p:399.90,old:499.90,c:"Masculinos",img:"https://images.unsplash.com/photo-1594035910387-fea47794261f?w=600"},
+{id:4,n:"Good Girl - Carolina Herrera 80ml",p:429.90,old:529.90,c:"Femininos",img:"https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600"},
+{id:5,n:"Polo Blue - Ralph Lauren 125ml",p:329.90,old:399.90,c:"Masculinos",img:"https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=600"},
+{id:6,n:"Floratta In Rose - O Boticário 75ml",p:119.90,old:159.90,c:"Femininos",img:"https://images.unsplash.com/photo-1590736969955-71cc94901144?w=600"},
+{id:7,n:"Sauvage - Dior 100ml",p:549.90,old:649.90,c:"Masculinos",img:"https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=600"},
+{id:8,n:"La Vie Est Belle - Lancôme 75ml",p:449.90,old:549.90,c:"Femininos",img:"https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=600"},
+{id:9,n:"Kaiak - Natura 100ml",p:139.90,old:179.90,c:"Unissex",img:"https://images.unsplash.com/photo-1615160460368-9e3e0e0e0e0e?w=600"},
+{id:10,n:"Kit 3 Mini Perfumes",p:99.90,old:149.90,c:"Kits",img:"https://images.unsplash.com/photo-1595425974270-9e5e0e0e0e0e?w=600"},
+{id:11,n:"Azzaro Wanted 100ml",p:289.90,old:359.90,c:"Masculinos",img:"https://images.unsplash.com/photo-1590736969955-71cc94901144?w=600"},
+{id:12,n:"Egeo Choc - O Boticário 90ml",p:129.90,old:169.90,c:"Femininos",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=600"},
+];
+let prods = JSON.parse(localStorage.getItem("loja_perfume_prods")||"null") || JSON.parse(JSON.stringify(DEFAULT));
+let isOwner=false, cat="Todos", cart={}, tempImg="";
+function save(){localStorage.setItem("loja_perfume_prods", JSON.stringify(prods))}
+const cats=["Todos","Masculinos","Femininos","Unissex","Kits"];
+function renderCats(){document.getElementById("cats").innerHTML=cats.map(c=>`<button class="${c===cat?'active':''}" onclick="setCat('${c}')">${c}</button>`).join("")}
+function setCat(c){cat=c;renderCats();render()}
+function render(){
+ let list=prods.filter(p=>cat==="Todos"||p.c===cat);
+ document.getElementById("grid").innerHTML=list.map(p=>`<div class="card"><img src="${p.img}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1541643600914-78b084683601?w=600'"><div class="info"><span class="tag">MAIS VENDIDO</span><h3>${p.n}</h3><div class="stars">★★★★★ (128)</div><div><span class="price">R$ ${p.p.toFixed(2).replace(".",",")}</span> <span class="old">R$ ${(p.old||p.p*1.4).toFixed(2).replace(".",",")}</span></div><button class="add" onclick="add(${p.id})">+ Adicionar ao Carrinho</button>${isOwner?`<div class="owner-actions"><button class="edit" onclick="editar(${p.id})">✏️ Editar / Trocar foto</button><button class="del" onclick="excluir(${p.id})">🗑️ Excluir</button></div>`:``}</div></div>`).join("");
+ renderOwnerList();
+}
+function add(id){cart[id]=(cart[id]||0)+1;update()}
+function change(id,d){cart[id]+=d;if(cart[id]<=0)delete cart[id];update()}
+function update(){let count=Object.values(cart).reduce((a,b)=>a+b,0);document.getElementById("count").innerText=count;let html="",total=0;
+for(let id in cart){let p=prods.find(x=>x.id==id);if(!p)continue;let q=cart[id];total+=p.p*q;html+=`<div class="item"><img src="${p.img}"><div style="flex:1"><b style="font-size:13px">${p.n}</b><br>R$ ${p.p.toFixed(2).replace(".",",")}</div><div class="qty"><button onclick="change(${id},-1)">-</button> ${q} <button onclick="change(${id},1)">+</button></div></div>`}
+document.getElementById("items").innerHTML=html||"Carrinho vazio";document.getElementById("total").innerText="Total: R$ "+total.toFixed(2).replace(".",",");document.getElementById("frete").innerText=total>=149?"✅ FRETE GRÁTIS!":"Faltam R$ "+(149-total).toFixed(2).replace(".",",")+" para frete grátis";}
+function toggleCart(){document.getElementById("cart").classList.toggle("open")}
+function finalizar(){let total=0,msg="Olá Adri! Quero comprar:%0A";for(let id in cart){let p=prods.find(x=>x.id==id);if(!p)continue;total+=p.p*cart[id];msg+=`- ${p.n} x${cart[id]} - R$ ${(p.p*cart[id]).toFixed(2).replace(".",",")}%0A`}msg+=`Total: R$ ${total.toFixed(2).replace(".",",")}`;window.open("https://wa.me/5519998932588?text="+msg,"_blank")}
+function openOwner(){let s=prompt("Área do dono - digite a senha (padrão: 1234)");if(s!=="1234"){alert("Senha errada. Tenta 1234");return} isOwner=true;document.getElementById("ownerPanel").classList.add("open");render()}
+function closeOwner(){document.getElementById("ownerPanel").classList.remove("open")}
+function previewFoto(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=function(){tempImg=r.result;let pv=document.getElementById("f_preview");pv.src=tempImg;pv.style.display="block"};r.readAsDataURL(f)}
+function limparForm(){document.getElementById("f_id").value="";document.getElementById("f_nome").value="";document.getElementById("f_preco").value="";document.getElementById("f_old").value="";document.getElementById("f_link").value="";document.getElementById("f_foto").value="";tempImg="";document.getElementById("f_preview").style.display="none"}
+function salvarProduto(){
+ let id=document.getElementById("f_id").value;
+ let nome=document.getElementById("f_nome").value.trim();
+ let preco=parseFloat(document.getElementById("f_preco").value);
+ let old=parseFloat(document.getElementById("f_old").value)||preco*1.4;
+ let catv=document.getElementById("f_cat").value;
+ let link=document.getElementById("f_link").value.trim();
+ let img=tempImg||link||"https://images.unsplash.com/photo-1541643600914-78b084683601?w=600";
+ if(!nome||!preco){alert("Coloca nome e preço!");return}
+ if(id){let p=prods.find(x=>x.id==id);p.n=nome;p.p=preco;p.old=old;p.c=catv;if(tempImg||link)p.img=img;alert("Produto atualizado! ✅")}
+ else{prods.unshift({id:Date.now(),n:nome,p:preco,old:old,c:catv,img:img});alert("Produto adicionado! ✅")}
+ save();limparForm();render();closeOwner();window.scrollTo({top:0,behavior:"smooth"});
+}
+function editar(id){let p=prods.find(x=>x.id==id);document.getElementById("f_id").value=p.id;document.getElementById("f_nome").value=p.n;document.getElementById("f_preco").value=p.p;document.getElementById("f_old").value=p.old;document.getElementById("f_cat").value=p.c;document.getElementById("f_link").value=p.img.startsWith("data:")?"":p.img;let pv=document.getElementById("f_preview");pv.src=p.img;pv.style.display="block";tempImg="";document.getElementById("ownerPanel").classList.add("open");alert("Agora troca o que quiser e clica em Salvar.")}
+function excluir(id){if(!confirm("Excluir esse produto mesmo?"))return;prods=prods.filter(x=>x.id!=id);save();render()}
+function renderOwnerList(){document.getElementById("ownerList").innerHTML=prods.map(p=>`<div style="display:flex;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:8px 0"><img src="${p.img}" style="width:44px;height:44px;object-fit:cover;border-radius:8px"><div style="flex:1;font-size:13px"><b>${p.n}</b><br>R$ ${p.p.toFixed(2).replace(".",",")}</div><button onclick="editar(${p.id})" style="padding:6px 10px;border:none;background:#ffcc00;border-radius:8px;font-weight:800;cursor:pointer">Editar</button><button onclick="excluir(${p.id})" style="padding:6px 10px;border:none;background:#ff3b30;color:#fff;border-radius:8px;font-weight:800;cursor:pointer">Excluir</button></div>`).join("")}
+renderCats();render();update();
+</script></body></html>
